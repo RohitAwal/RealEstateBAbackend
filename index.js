@@ -10,10 +10,12 @@ var usermodel = require('./model/UsersModel')
 var contactmodel = require('./model/contactmodel')
 var bookmodel = require('./model/BookingModel')
 var reservemodel = require('./model/ReserveModel')
+var advertmodel = require('./model/AdvertModel')
 var userController = require('./Controller/UsersController')
 var bookingController = require('./Controller/BookingController')
 var contactController = require('./Controller/ContactsController')
 var reserveController = require('./Controller/ReserveController')
+var advertController = require('./Controller/AdvertController')
 var authController = require('./Controller/AuthenticationController')
 
 let initCallback; 
@@ -189,6 +191,11 @@ application.use(function(req,res,next){
         res.send({"message":"Your reservation is Register"})
     })
 
+    application.post('/v1/advert',advertController.advertForm,function(req,res, next){
+        res.status(201);
+        res.send({"message":"Your Advertisement is Register"})
+    })
+
 
 
     application.post('/v1/book',bookingController.bookingForm,function(req, res, next){
@@ -276,6 +283,19 @@ application.get('/v1/contact', function(req,res){
 application.get('/v1/reserve', function(req,res){
     reservemodel.reserve.findAll({
         attributes: ['id','fullname','email','phoneno','address','departure','destination','people']
+    })
+    .then(function(result){
+        res.status(200);
+        res.json(result);
+    })
+    .catch(function(err){
+        
+    })
+})
+
+application.get('/v1/advert', function(req,res){
+    advertmodel.advert.findAll({
+        attributes: ['id','I_have','I_want','Name','Email','Phoneno','Adtitle','Description','Location','LandArea','Price']
     })
     .then(function(result){
         res.status(200);
@@ -546,13 +566,29 @@ application.delete('/v1/contact/:id',function(req,res,next){
     })
  })
 
-
+ 
 
 
 
  application.get('/v1/reserve/:id', function(req, res) {
 
     reservemodel.reserve.findOne({
+			where: {
+				id: req.params.id
+			}
+		})
+		.then(function(result) {
+			res.status(200);
+			res.json(result)
+		})
+		.catch(function(err) {
+
+		})
+})
+
+application.get('/v1/advert/:id', function(req, res) {
+
+    advertmodel.advert.findOne({
 			where: {
 				id: req.params.id
 			}
@@ -631,6 +667,37 @@ application.put('/v1/reserve/:id', function(req, res) {
 })
 
 
+application.put('/v1/advert/:id', function(req, res) {
+
+	advertmodel.advert.update({
+
+        I_have: req.body.I_have,
+        I_want: req.body.I_want,
+        Name: req.body.Name,
+        Email: req.body.Email,
+        Phoneno: req.body.Phoneno,
+        Adtitle : req.body.Adtitle,
+        Description : req.body.Description,
+        Location : req.body.Location,
+        LandArea: req.body.LandArea,
+        Price : req.body.Price,
+			
+		}, {
+			where: {
+				id: req.params.id
+			}
+		})
+		.then(function(result) {
+			res.status(201);
+			res.send({
+				"message": "Advertisement Edited Succesfuly"
+			})
+		})
+		.catch(function(err) {
+
+		})
+})
+
 
 
 
@@ -661,6 +728,32 @@ application.delete('/v1/reserve/:id',function(req,res,next){
     })
  })
 
+
+application.delete('/v1/advert:id',function(req,res,next){
+    console.log(req.params.id)
+    advertmodel.advert.destroy({
+        where: {id : req.params.id}
+    }) 
+    .then(function(result){
+        
+     if (result == 1) {
+ 
+         res.status(201)
+         res.send({
+             "message": "deleted succesfully"
+         });
+     } else {
+         next({
+             "status": 500,
+             "message": "Couldnot delete"
+         })
+ 
+     }
+    })
+    .catch(function(err){
+        next({"status":500, "message":"could not delete"})
+    })
+ })
 /**
 * @swagger
 * /v1/auth:
