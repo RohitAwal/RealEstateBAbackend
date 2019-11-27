@@ -49,12 +49,12 @@ const advert = db.sequelize.define('advert', {
       },
 
     LandArea:  {
-        type: db.Sequelize.INTEGER,
+        type: db.Sequelize.STRING,
         allowNull:false
       },
   
     Price:  {
-        type: db.Sequelize.INTEGER,
+        type: db.Sequelize.STRING,
         allowNull:false
       }
   }, 

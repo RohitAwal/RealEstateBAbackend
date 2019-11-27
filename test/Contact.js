@@ -77,7 +77,7 @@ describe('PUT Contact', function(){
 
 
 //delete testing
-describe('delete contatc', function() {
+describe('delete contact', function() {
     nid = 6;
     it('it should delete the contact', function(done) {
         chai.request(server)
