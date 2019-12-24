@@ -872,6 +872,6 @@ application.post('/user/add/locationphoto', upload.single('locationphoto'), func
 
 console.log('app running')
 
-application.listen(3003);
+application.listen(3001);
 
 module.exports = application;
